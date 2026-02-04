@@ -78,4 +78,50 @@ class AuthWebController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+    public function settings()
+    {
+        $user = Auth::user()->load('seller');
+        return view('auth.settings', compact('user'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'shop_name' => ['required_if:role,seller', 'nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if ($user->isSeller()) {
+            $user->seller->update([
+                'shop_name' => $validated['shop_name'],
+                'description' => $validated['description'],
+            ]);
+        }
+
+        return back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        Auth::user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back()->with('success', 'Password changed successfully.');
+    }
 }

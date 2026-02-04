@@ -25,7 +25,7 @@
                             <a href="/" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-semibold transition">
                                 Explore
                             </a>
-                            <a href="#" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-semibold transition">
+                            <a href="{{ route('categories.index') }}" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-semibold transition">
                                 Categories
                             </a>
                         </div>
@@ -77,8 +77,8 @@
                                         <p class="text-sm font-medium text-slate-900">{{ Auth::user()->name }}</p>
                                         <p class="text-xs text-slate-500 truncate">{{ Auth::user()->email }}</p>
                                     </div>
-                                    <a href="/orders" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My Orders</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Account Settings</a>
+                                    <a href="/orders" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">My Orders</a>
+                                    <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition">Account Settings</a>
                                     <hr class="my-1 border-slate-100">
                                     <form method="POST" action="/logout">
                                         @csrf

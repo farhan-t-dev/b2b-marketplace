@@ -11,11 +11,16 @@ class Product extends Model
 {
     use HasFactory, SoftDeletes, Searchable;
 
-    protected $fillable = ['seller_id', 'title', 'description', 'status'];
+    protected $fillable = ['seller_id', 'category_id', 'title', 'description', 'status'];
 
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function variants()

@@ -16,6 +16,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Categories
+        $categories = [
+            ['name' => 'Electronics', 'slug' => 'electronics'],
+            ['name' => 'Office Supplies', 'slug' => 'office-supplies'],
+            ['name' => 'Industrial Equipment', 'slug' => 'industrial-equipment'],
+            ['name' => 'Textiles', 'slug' => 'textiles'],
+            ['name' => 'Raw Materials', 'slug' => 'raw-materials'],
+        ];
+
+        foreach ($categories as $cat) {
+            \App\Models\Category::create($cat);
+        }
+
+        $allCategories = \App\Models\Category::all();
+
         // Admin
         User::factory()->create([
             'name' => 'Admin User',
@@ -41,6 +56,7 @@ class DatabaseSeeder extends Seeder
         foreach ($sellers as $seller) {
             Product::factory(10)->create([
                 'seller_id' => $seller->id,
+                'category_id' => $allCategories->random()->id,
                 'status' => 'active',
             ])->each(function ($product) {
                 // Create 2-4 variants for each product

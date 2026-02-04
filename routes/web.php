@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/products', [HomeController::class, 'index'])->name('products.index');
+Route::get('/categories', [HomeController::class, 'categories'])->name('categories.index');
 Route::get('/products/{product}', [HomeController::class, 'show'])->name('products.show');
 
 // Auth Routes
@@ -20,6 +22,11 @@ Route::post('/logout', [AuthWebController::class, 'logout'])->name('logout');
 
 // Protected Routes
 Route::middleware('auth')->group(function () {
+    // Account Settings
+    Route::get('/settings', [AuthWebController::class, 'settings'])->name('settings');
+    Route::patch('/settings/profile', [AuthWebController::class, 'updateProfile'])->name('settings.profile');
+    Route::patch('/settings/password', [AuthWebController::class, 'updatePassword'])->name('settings.password');
+
     // Cart Management
     Route::prefix('cart')->group(function () {
         Route::get('/', [\App\Http\Controllers\Web\CartWebController::class, 'index'])->name('cart.index');
@@ -40,6 +47,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/products', [\App\Http\Controllers\Web\SellerWebController::class, 'products'])->name('seller.products');
         Route::get('/products/create', [\App\Http\Controllers\Web\SellerWebController::class, 'createProduct'])->name('seller.products.create');
         Route::post('/products', [\App\Http\Controllers\Web\SellerWebController::class, 'storeProduct'])->name('seller.products.store');
+        Route::get('/products/{product}/edit', [\App\Http\Controllers\Web\SellerWebController::class, 'editProduct'])->name('seller.products.edit');
+        Route::patch('/products/{product}', [\App\Http\Controllers\Web\SellerWebController::class, 'updateProduct'])->name('seller.products.update');
+        Route::post('/products/{product}/publish', [\App\Http\Controllers\Web\SellerWebController::class, 'publishProduct'])->name('seller.products.publish');
         Route::get('/orders', [\App\Http\Controllers\Web\SellerWebController::class, 'orders'])->name('seller.orders');
         Route::patch('/orders/{order}/status', [\App\Http\Controllers\Web\SellerWebController::class, 'updateOrderStatus'])->name('seller.orders.status');
     });
@@ -50,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Web\AdminWebController::class, 'users'])->name('admin.users');
         Route::get('/products', [\App\Http\Controllers\Web\AdminWebController::class, 'products'])->name('admin.products');
         Route::patch('/products/{product}/status', [\App\Http\Controllers\Web\AdminWebController::class, 'updateProductStatus']);
-        Route::post('/users/{user}/toggle', [\App\Http\Controllers\Web\AdminWebController::class, 'toggleUserStatus']);
+        Route::post('/users/{user}/toggle', [\App\Http\Controllers\Web\AdminWebController::class, 'toggleUserStatus'])->name('admin.users.toggle');
+        Route::post('/sellers/{seller}/approve', [\App\Http\Controllers\Web\AdminWebController::class, 'approveSeller'])->name('admin.sellers.approve');
     });
 });

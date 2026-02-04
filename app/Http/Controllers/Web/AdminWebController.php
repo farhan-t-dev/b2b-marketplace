@@ -29,7 +29,7 @@ class AdminWebController extends Controller
 
     public function users()
     {
-        $users = User::with('seller')->latest()->paginate(15);
+        $users = User::withTrashed()->with('seller')->latest()->paginate(15);
         return view('admin.users.index', compact('users'));
     }
 
@@ -52,8 +52,6 @@ class AdminWebController extends Controller
 
     public function toggleUserStatus(User $user)
     {
-        // For MVP, we'll just soft delete or use a status.
-        // Let's assume we have a status or just block them.
         if ($user->isAdmin()) {
             return back()->with('error', 'Cannot suspend an admin.');
         }
@@ -65,5 +63,11 @@ class AdminWebController extends Controller
             $user->delete();
             return back()->with('success', 'User suspended.');
         }
+    }
+
+    public function approveSeller(Seller $seller)
+    {
+        $seller->update(['status' => 'active']);
+        return back()->with('success', "Shop '{$seller->shop_name}' has been verified and is now live.");
     }
 }
