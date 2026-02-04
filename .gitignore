@@ -41,3 +41,12 @@ yarn.lock
 # Logs
 *.log
 logs
+
+# Project Specific
+/bootstrap/cache/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+database/*.sqlite
+database/*.sqlite-journal
