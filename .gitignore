@@ -1,0 +1,43 @@
+# Laravel
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.local
+.env.*.local
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+auth.json
+.rnd
+.DS_Store
+/.idea
+/.vscode
+
+# IDE
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+composer.lock
+package-lock.json
+yarn.lock
+
+# Build
+/build
+/dist
+
+# Logs
+*.log
+logs

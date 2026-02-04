@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: marketplace_app
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    networks:
+      - marketplace
+
+  db:
+    image: mysql:8.0
+    container_name: marketplace_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-marketplace}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_USER: ${DB_USERNAME:-marketplace}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - marketplace
+
+  nginx:
+    image: nginx:alpine
+    container_name: marketplace_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/app
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ./docker/nginx/ssl/:/etc/nginx/ssl/
+    depends_on:
+      - app
+    networks:
+      - marketplace
+
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: marketplace_meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY:-masterkey}
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch:/meili_data
+    networks:
+      - marketplace
+
+networks:
+  marketplace:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+  meilisearch:
+    driver: local
