@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         // Admin
         User::factory()->create([
             'name' => 'Admin User',
-            'email' => 'admin@marketplace.com',
+            'email' => 'admin@marketflow.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);

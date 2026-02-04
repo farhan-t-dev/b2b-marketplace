@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'B2B Marketplace')</title>
+    <title>@yield('title', 'MarketFlow B2B')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
                 <div class="flex justify-between h-16">
                     <div class="flex items-center space-x-8">
                         <div class="flex-shrink-0 flex items-center">
-                            <a href="/" class="text-2xl font-black text-blue-600 tracking-tight">Market<span class="text-slate-900">Place</span></a>
+                            <a href="/" class="text-2xl font-black text-blue-600 tracking-tight">Market<span class="text-slate-900">Flow</span></a>
                         </div>
                         <div class="hidden sm:flex sm:space-x-4">
                             <a href="/" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-semibold transition">
@@ -31,12 +31,12 @@
                         </div>
                     </div>
 
-                    <!-- Search Bar placeholder for better UI -->
+                    <!-- Search Bar -->
                     <div class="hidden md:flex flex-1 items-center justify-center px-8">
                         <div class="w-full max-w-lg relative">
                             <form action="/" method="GET">
                                 <input type="text" name="q" placeholder="Search for products, sellers..." 
-                                       class="w-full bg-slate-100 border-transparent rounded-xl py-2 pl-10 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-sm"
+                                       class="w-full bg-slate-100 border-transparent rounded-xl py-2 pl-10 focus:bg-white focus:ring-2 focus:ring-blue-50 focus:border-transparent transition text-sm"
                                        value="{{ request('q') }}">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -65,7 +65,7 @@
                             @endif
 
                             <div class="ml-3 relative" x-data="{ userMenu: false }">
-                                <button @click="userMenu = !userMenu" class="flex text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 border border-slate-200 p-1 hover:bg-slate-50 transition">
+                                <button @click="userMenu = !userMenu" class="flex text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-50 border border-slate-200 p-1 hover:bg-slate-50 transition">
                                     <div class="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-black">
                                         {{ substr(Auth::user()->name, 0, 1) }}
                                     </div>
@@ -135,28 +135,29 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div class="col-span-1 md:col-span-1 space-y-6">
-                        <a href="/" class="text-2xl font-black text-white tracking-tight">Market<span class="text-blue-500">Place</span></a>
-                        <p class="text-sm leading-relaxed">
+                        <a href="/" class="text-2xl font-black text-white tracking-tight">Market<span class="text-blue-500">Flow</span></a>
+                        <p class="text-sm leading-relaxed text-slate-400">
                             The most trusted B2B multi-vendor platform for global commerce. Built with performance and security at its core.
                         </p>
-                        <div class="flex space-x-4">
-                            <a href="#" class="hover:text-white transition"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-1.012-2.175-1.644-3.594-1.644-2.717 0-4.92 2.203-4.92 4.917 0 .39.044.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.735-.671 1.589-.671 2.502 0 1.707.869 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/></svg></a>
-                            <a href="#" class="hover:text-white transition"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.441 16.892c-2.102.144-6.784.144-8.883 0-2.276-.156-2.541-1.27-2.558-4.892.017-3.629.285-4.736 2.558-4.892 2.099-.144 6.782-.144 8.883 0 2.277.156 2.541 1.27 2.559 4.892-.018 3.629-.285 4.736-2.559 4.892zM10 9.658l4.295 2.342L10 14.342V9.658z"/></svg></a>
+                        <div class="pt-4 border-t border-slate-800 space-y-3">
+                            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500">Crafted By</p>
+                            <p class="text-lg font-black text-white italic">Farhan T.</p>
+                            <a href="mailto:farhanweb20@gmail.com" class="block text-xs font-bold text-slate-500 hover:text-white transition">farhanweb20@gmail.com</a>
                         </div>
                     </div>
                     <div class="space-y-6">
-                        <h3 class="text-white font-bold uppercase tracking-widest text-xs">Marketplace</h3>
-                        <ul class="space-y-4 text-sm">
+                        <h3 class="text-white font-bold uppercase tracking-widest text-xs">MarketFlow</h3>
+                        <ul class="space-y-4 text-sm font-medium">
                             <li><a href="/" class="hover:text-white transition">Browse Products</a></li>
                             <li><a href="#" class="hover:text-white transition">Top Sellers</a></li>
                             <li><a href="#" class="hover:text-white transition">New Arrivals</a></li>
-                            <li><a href="#" class="hover:text-white transition">Categories</a></li>
+                            <li><a href="{{ route('categories.index') }}" class="hover:text-white transition">Categories</a></li>
                         </ul>
                     </div>
                     <div class="space-y-6">
                         <h3 class="text-white font-bold uppercase tracking-widest text-xs">For Businesses</h3>
-                        <ul class="space-y-4 text-sm">
-                            <li><a href="/register?role=seller" class="hover:text-white transition">Sell on MarketPlace</a></li>
+                        <ul class="space-y-4 text-sm font-medium">
+                            <li><a href="/register?role=seller" class="hover:text-white transition">Sell on MarketFlow</a></li>
                             <li><a href="#" class="hover:text-white transition">Seller Guidelines</a></li>
                             <li><a href="#" class="hover:text-white transition">Shipping Policy</a></li>
                             <li><a href="#" class="hover:text-white transition">Commissions</a></li>
@@ -164,7 +165,7 @@
                     </div>
                     <div class="space-y-6">
                         <h3 class="text-white font-bold uppercase tracking-widest text-xs">Support</h3>
-                        <ul class="space-y-4 text-sm">
+                        <ul class="space-y-4 text-sm font-medium">
                             <li><a href="#" class="hover:text-white transition">Help Center</a></li>
                             <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
                             <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
@@ -173,11 +174,11 @@
                     </div>
                 </div>
                 <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                    <p class="text-xs text-slate-500 font-medium">
-                        &copy; {{ date('Y') }} MarketPlace B2B MVP. Designed for portfolio showcase.
+                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">
+                        &copy; {{ date('Y') }} MarketFlow B2B MVP.
                     </p>
-                    <div class="flex space-x-6 text-xs font-bold text-slate-500 uppercase tracking-widest">
-                        <span>Made with ❤️ using Laravel 11</span>
+                    <div class="flex space-x-6 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        <span>High-Performance Commerce Architecture</span>
                     </div>
                 </div>
             </div>

@@ -19,12 +19,15 @@ class AdminWebController extends Controller
             'total_products' => Product::count(),
             'total_orders' => Order::count(),
             'total_revenue' => Order::where('status', 'delivered')->sum('total'),
+            'new_users_today' => User::whereDate('created_at', today())->count(),
+            'pending_sellers' => Seller::where('status', 'pending')->count(),
         ];
 
         $recentUsers = User::latest()->take(5)->get();
         $recentSellers = Seller::with('user')->latest()->take(5)->get();
+        $recentOrders = Order::with(['buyer', 'seller'])->latest()->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentUsers', 'recentSellers'));
+        return view('admin.dashboard', compact('stats', 'recentUsers', 'recentSellers', 'recentOrders'));
     }
 
     public function users()
