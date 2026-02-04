@@ -5,8 +5,10 @@
 @section('content')
 <div class="max-w-5xl mx-auto" x-data="{ 
     step: 1,
+    imageSource: 'upload',
     variants: [{ sku: '', price: '', stock: 0, color: '', size: '' }],
     previews: [],
+    fileError: '',
     addVariant() {
         this.variants.push({ sku: '', price: '', stock: 0, color: '', size: '' });
     },
@@ -15,8 +17,18 @@
     },
     handleFileSelect(event) {
         this.previews = [];
+        this.fileError = '';
         const files = event.target.files;
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
         for (let i = 0; i < files.length; i++) {
+            if (files[i].size > maxSize) {
+                this.fileError = 'One or more files exceed the 2MB limit.';
+                event.target.value = '';
+                this.previews = [];
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 this.previews.push(e.target.result);
@@ -59,7 +71,7 @@
         </div>
     @endif
 
-    <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8 pb-20">
+    <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8 pb-20" id="productForm">
         @csrf
         
         <!-- Step 1: Core Details -->
@@ -70,28 +82,29 @@
                     <p class="text-slate-500 text-sm font-medium mt-1">Start with the basics. These will be visible to everyone.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="title" class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Product Title</label>
-                        <input type="text" name="title" id="title" required 
-                               class="w-full h-14 bg-slate-50 border-slate-200 rounded-2xl px-6 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-500 transition font-bold text-slate-900 placeholder-slate-300" 
-                               placeholder="e.g. Premium Cotton Business Shirts"
-                               value="{{ old('title') }}">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="title" class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Product Title</label>
+                            <input type="text" name="title" id="title" :required="step === 1"
+                                   class="w-full h-14 bg-slate-50 border-slate-200 rounded-2xl px-6 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-500 transition font-bold text-slate-900 placeholder-slate-300" 
+                                   placeholder="e.g. Premium Cotton Business Shirts"
+                                   value="{{ old('title') }}">
+                        </div>
+                        <div>
+                            <label for="category_id" class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
+                            <select name="category_id" id="category_id" :required="step === 1"
+                                    class="w-full h-14 bg-slate-50 border-slate-200 rounded-2xl px-6 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-500 transition font-bold text-slate-900">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label for="category_id" class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
-                        <select name="category_id" id="category_id" required 
-                                class="w-full h-14 bg-slate-50 border-slate-200 rounded-2xl px-6 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-500 transition font-bold text-slate-900">
-                            <option value="">Select Category</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
                     <div>
                         <label for="description" class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Detailed Description</label>
-                        <textarea name="description" id="description" rows="6" required 
+                        <textarea name="description" id="description" rows="6" :required="step === 1"
                                   class="w-full bg-slate-50 border-slate-200 rounded-2xl px-6 py-4 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-500 transition font-medium text-slate-700 placeholder-slate-300"
                                   placeholder="Describe your product's materials, benefits, and specifications...">{{ old('description') }}</textarea>
                     </div>
@@ -130,15 +143,15 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">SKU / ID</label>
-                                    <input type="text" :name="'variants['+index+'][sku]'" required class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="PRD-BLUE-LG">
+                                    <input type="text" :name="'variants['+index+'][sku]'" :required="step === 2" class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="PRD-BLUE-LG">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Unit Price ($)</label>
-                                    <input type="number" step="0.01" :name="'variants['+index+'][price]'" required class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="0.00">
+                                    <input type="number" step="0.01" :name="'variants['+index+'][price]'" :required="step === 2" class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="0.00">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Initial Stock</label>
-                                    <input type="number" :name="'variants['+index+'][stock]'" required class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="0">
+                                    <input type="number" :name="'variants['+index+'][stock]'" :required="step === 2" class="w-full h-12 bg-white border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 transition font-bold" placeholder="0">
                                 </div>
                             </div>
 
@@ -173,22 +186,42 @@
         <div x-show="step === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
             <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-8">
                 <div class="border-b border-slate-100 pb-6">
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Visual Identity</h2>
-                    <p class="text-slate-500 text-sm font-medium mt-1">High-quality images increase trust and sales. Upload up to 5 photos.</p>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Visual Identity</h2>
+                            <p class="text-slate-500 text-sm font-medium mt-1">High-quality images increase trust and sales.</p>
+                        </div>
+                        <div class="flex p-1 bg-slate-100 rounded-xl">
+                            <button type="button" @click="imageSource = 'upload'" :class="imageSource === 'upload' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition">Upload</button>
+                            <button type="button" @click="imageSource = 'url'" :class="imageSource === 'url' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500'" class="px-4 py-2 text-xs font-black uppercase tracking-widest rounded-lg transition">URLs</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="space-y-8">
-                    <!-- Custom File Upload UI -->
-                    <div class="relative">
-                        <input type="file" name="images[]" multiple required @change="handleFileSelect"
-                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
-                        <div class="border-4 border-dashed border-slate-100 rounded-[2rem] p-12 text-center group hover:border-blue-200 transition-colors duration-300 bg-slate-50/50">
-                            <div class="h-20 w-20 rounded-3xl bg-blue-50 flex items-center justify-center text-blue-600 mx-auto mb-6 group-hover:scale-110 transition duration-500">
-                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <!-- File Upload Option -->
+                    <div x-show="imageSource === 'upload'" class="space-y-6">
+                        <div class="relative">
+                            <input type="file" name="images[]" id="images" multiple :required="step === 3 && imageSource === 'upload'" @change="handleFileSelect"
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
+                            <div class="border-4 border-dashed rounded-[2rem] p-12 text-center group transition-colors duration-300"
+                                 :class="fileError ? 'border-rose-200 bg-rose-50/30' : 'border-slate-100 bg-slate-50/50 hover:border-blue-200'">
+                                <div class="h-20 w-20 rounded-3xl bg-blue-50 flex items-center justify-center text-blue-600 mx-auto mb-6 group-hover:scale-110 transition duration-500">
+                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <p class="text-lg font-black text-slate-900 tracking-tight">Drop images here or click to browse</p>
+                                <p class="text-slate-400 text-sm font-bold mt-1 uppercase tracking-widest">Max 2MB per file</p>
                             </div>
-                            <p class="text-lg font-black text-slate-900 tracking-tight">Drop images here or click to browse</p>
-                            <p class="text-slate-400 text-sm font-bold mt-1 uppercase tracking-widest">PNG, JPG or WebP (Max 2MB per file)</p>
                         </div>
+                        <p x-show="fileError" x-text="fileError" class="text-rose-600 text-xs font-black uppercase tracking-widest text-center"></p>
+                    </div>
+
+                    <!-- URL Option -->
+                    <div x-show="imageSource === 'url'" class="space-y-4">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Image URLs (one per line)</label>
+                        <textarea name="image_urls" rows="4" :required="step === 3 && imageSource === 'url'"
+                                  class="w-full bg-slate-50 border-slate-200 rounded-2xl px-6 py-4 focus:bg-white focus:ring-4 focus:ring-blue-50 transition font-medium text-slate-700"
+                                  placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
                     </div>
 
                     <!-- Image Previews -->
@@ -197,7 +230,6 @@
                             <template x-for="(preview, index) in previews" :key="index">
                                 <div class="aspect-square rounded-2xl overflow-hidden border border-slate-200 relative group shadow-sm">
                                     <img :src="preview" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 </div>
                             </template>
                         </div>

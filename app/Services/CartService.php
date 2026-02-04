@@ -46,7 +46,7 @@ class CartService
             $query->where('user_id', $user->id);
         })->findOrFail($cartItemId);
 
-        if ($item->productVariant->stock < $quantity) {
+        if ($item->variant->stock < $quantity) {
             throw new \Exception('Insufficient stock');
         }
 
