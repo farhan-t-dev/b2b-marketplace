@@ -90,8 +90,8 @@ docker-compose exec app ./vendor/bin/phpunit
 ---
 
 ## Project Roadmap
-For a detailed breakdown of the planning and execution phases, please refer to the Masterplan.
+- **Detailed Planning:** See [Masterplan.md](./Masterplan.md) for comprehensive breakdown of phases and execution strategy.
 
 ---
 
-**Developed as a portfolio project to showcase professional software engineering standards.**
+**Developed by farhan-t-dev as a portfolio project to showcase professional software engineering standards.**
