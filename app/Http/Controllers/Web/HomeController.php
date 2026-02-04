@@ -10,10 +10,18 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::with(['variants', 'images', 'seller'])
-            ->where('status', 'active')
-            ->latest()
-            ->paginate(12);
+        $query = Product::with(['variants', 'images', 'seller'])
+            ->where('status', 'active');
+
+        if ($request->has('q')) {
+            $search = $request->q;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        $products = $query->latest()->paginate(12);
 
         return view('home', compact('products'));
     }

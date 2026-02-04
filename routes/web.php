@@ -43,4 +43,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders', [\App\Http\Controllers\Web\SellerWebController::class, 'orders'])->name('seller.orders');
         Route::patch('/orders/{order}/status', [\App\Http\Controllers\Web\SellerWebController::class, 'updateOrderStatus'])->name('seller.orders.status');
     });
+
+    // Admin Panel
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Web\AdminWebController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/users', [\App\Http\Controllers\Web\AdminWebController::class, 'users'])->name('admin.users');
+        Route::get('/products', [\App\Http\Controllers\Web\AdminWebController::class, 'products'])->name('admin.products');
+        Route::patch('/products/{product}/status', [\App\Http\Controllers\Web\AdminWebController::class, 'updateProductStatus']);
+        Route::post('/users/{user}/toggle', [\App\Http\Controllers\Web\AdminWebController::class, 'toggleUserStatus']);
+    });
 });
