@@ -1,0 +1,13 @@
+.git
+node_modules
+vendor
+storage/*.php
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*.php
+storage/logs/*
+.env
+phpunit.xml
+Dockerfile
+docker-compose.yml
+!docker
